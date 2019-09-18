@@ -170,7 +170,6 @@ def insert_into_sqlite(series, con):
             'type',
             'probability'
         ]])
-        ]
     )
 
 def main():
