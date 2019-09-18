@@ -6,6 +6,7 @@ event data from a csv file
 to the database.
 '''
 
+import pdb
 import argparse
 import sqlite3
 import pandas as pd
@@ -138,7 +139,7 @@ def insert_into_sqlite(series, con):
             ?,
         )
     ''', 
-        list(series[[
+        series[[
             'eventID',
             'Agency',
             'Identifier',
@@ -169,7 +170,7 @@ def insert_into_sqlite(series, con):
             'strikeUncertainty',
             'type',
             'probability'
-        ]])
+        ]].tolist()
     )
 
 def main():
