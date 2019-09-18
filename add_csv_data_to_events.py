@@ -66,7 +66,7 @@ def map_to_existing_names(series):
     new_series = pd.Series()
 
     for key in MAPPINGS.keys():
-        new_series[key] = MAPPINGS[keys](series)
+        new_series[key] = MAPPINGS[key](series)
     return new_series
 
 def no_comment_row(x_str):
