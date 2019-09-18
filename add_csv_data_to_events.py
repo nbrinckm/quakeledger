@@ -58,6 +58,11 @@ MAPPINGS = {
     'dipUncertainty': MapToNone(),
     'strike': MapToAttribute('strike'),
     'strikeUncertainty': MapToNone(),
+    # we have historic in the new series,
+    # but just observed in the old dataset
+    # we can map them afterwards with sql
+    # but I'm still a bit unsure about
+    # the values here
     'type': MapToAttribute('type'),
     'probability': MapToNone(),
 }
@@ -73,7 +78,39 @@ def no_comment_row(x_str):
     return x_str[0] != '#'
 
 def insert_into_sqlite(series, con):
-    con.execute('''
+    data = tuple(series[[
+        'eventID',
+        'Agency',
+        'Identifier',
+        'year',
+        'month',
+        'day',
+        'hour',
+        'minute',
+        'second',
+        'timeUncertainty',
+        'longitude',
+        'longitudeUncertainty',
+        'latitude',
+        'latitudeUncertainty',
+        'horizontalUncertainty',
+        'minHorizontalUncertainty',
+        'maxHorizontalUncertainty',
+        'azimuthMaxHorizontalUncertainty',
+        'depth',
+        'depthUncertainty',
+        'magnitude',
+        'magnitudeUncertainty',
+        'rake',
+        'rakeUncertainty',
+        'dip',
+        'dipUncertainty',
+        'strike',
+        'strikeUncertainty',
+        'type',
+        'probability'
+    ]].tolist())
+    query_to_insert = '''
         INSERT INTO events (
             eventID,
             Agency,
@@ -135,42 +172,10 @@ def insert_into_sqlite(series, con):
             ?,
             ?,
             ?,
-            ?,
+            ?
         )
-    ''', 
-        series[[
-            'eventID',
-            'Agency',
-            'Identifier',
-            'year',
-            'month',
-            'day',
-            'hour',
-            'minute',
-            'second',
-            'timeUncertainty',
-            'longitude',
-            'longitudeUncertainty',
-            'latitude',
-            'latitudeUncertainty',
-            'horizontalUncertainty',
-            'minHorizontalUncertainty',
-            'maxHorizontalUncertainty',
-            'azimuthMaxHorizontalUncertainty',
-            'depth',
-            'depthUncertainty',
-            'magnitude',
-            'magnitudeUncertainty',
-            'rake',
-            'rakeUncertainty',
-            'dip',
-            'dipUncertainty',
-            'strike',
-            'strikeUncertainty',
-            'type',
-            'probability'
-        ]].tolist()
-    )
+    '''
+    con.execute(query_to_insert, data)
 
 def main():
     argparser = argparse.ArgumentParser(
@@ -191,6 +196,11 @@ def main():
         mapped_row = map_to_existing_names(row)
 
         insert_into_sqlite(mapped_row, con)
+
+        if index % 1000 == 0:
+            print('inserted {}'.format(mapped_row['eventID']))
+            con.commit()
+    con.commit()
 
 if __name__ == '__main__':
     main()
