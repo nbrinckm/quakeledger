@@ -6,7 +6,6 @@ event data from a csv file
 to the database.
 '''
 
-import pdb
 import argparse
 import sqlite3
 import pandas as pd
@@ -191,7 +190,7 @@ def main():
     for index, row in data.iterrows():
         mapped_row = map_to_existing_names(row)
 
-        insert_into_sqlite(row, con)
+        insert_into_sqlite(mapped_row, con)
 
 if __name__ == '__main__':
     main()
