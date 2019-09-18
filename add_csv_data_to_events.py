@@ -28,15 +28,15 @@ class MapToAttributeWithPrefix():
         self._attribute = attribute
 
     def __call__(self, old_series):
-        return self._prefix + old_series[self._attribute]
+        return self._prefix + str(old_series[self._attribute])
         
 MAPPINGS = {
-    'eventID': MapToAttributeWithPrefix(prefix='peru_', attribute='ripid'),
+    'eventID': MapToAttributeWithPrefix(prefix='peru_', attribute='rupid'),
     'Agency': MapToAttribute('Agency'),
-    'Identifier': MapToAttributeWithPrefix(prefix='peru_', attribute='ripid'),
-    'year': MapToAttribute('Unnamed 12'),
-    'month': MapToAttribute('Unnamed 13'),
-    'day': MapToAttribute('Unnamed 14'),
+    'Identifier': MapToAttributeWithPrefix(prefix='peru_', attribute='rupid'),
+    'year': MapToAttribute('Unnamed: 12'),
+    'month': MapToAttribute('Unnamed: 13'),
+    'day': MapToAttribute('Unnamed: 14'),
     'minute': MapToNone(),
     'second': MapToNone(),
     'timeUncertainty': MapToNone(),
